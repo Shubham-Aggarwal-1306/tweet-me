@@ -25,9 +25,11 @@ SECRET_KEY = '&r#z29t7z+gc4=w9nxe2l)=ed0s9lyp5ou@_c!2(t+863v7x#&'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
+LOGIN_URL = '/login'
 
+MAX_TWEET_LENGTH = 240
 # Application definition
 
 INSTALLED_APPS = [
@@ -37,6 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    #External
+    'rest_framework',
+    #Internal
+    'tweets',
 ]
 
 MIDDLEWARE = [
@@ -54,7 +60,7 @@ ROOT_URLCONF = 'tweetme.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [ BASE_DIR + '/templates' ], # add this line to include the templates directory in the project
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
