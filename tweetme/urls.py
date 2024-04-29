@@ -15,14 +15,23 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from tweets.views import home_view, tweet_detail_view, tweet_list_view, tweet_create_view, tweet_delete_view, tweet_action_view
-
+from tweets.views import tweets_list_view, tweets_profile_view, tweets_detail_view
+from django.conf import settings
+from django.views.generic import TemplateView
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', home_view, name='home_view'),
-    path('create-tweet', tweet_create_view, name='tweet_create_view'),
-    path('tweets', tweet_list_view , name='tweet_list_view'),
-    path('tweets/<int:tweet_id>', tweet_detail_view, name='tweet_detail_view'),
-    path('api/tweets/', include('tweets.urls'))                 
+    path('', tweets_list_view, name='home_view'),
+    path('<int:tweet_id>', tweets_detail_view, name='tweets_detail_view'),
+    path('profile/<str:username>', tweets_profile_view, name='profile_view'),
+    
+    # path('react/', TemplateView.as_view(template_name='react.html')),
+    # path('create-tweet', tweet_create_view, name='tweet_create_view'),
+    # path('tweets', tweet_list_view , name='tweet_list_view'),
+    # path('tweets/<int:tweet_id>', tweet_detail_view, name='tweet_detail_view'),
+    path('api/tweets/', include('tweets.api.urls'))                 
     
 ]
+
+if settings.DEBUG:
+    from django.conf.urls.static import static
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

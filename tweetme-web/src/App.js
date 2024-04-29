@@ -4,7 +4,8 @@ import React from 'react'
 import { TweetsComponent } from './tweets'
 
 
-function App() {
+function App(props) {
+  console.log(props)
 
   return (
     <div className="App">
@@ -13,7 +14,7 @@ function App() {
         <p>
           Tweetme App by <code>Dev</code> and <code>Dev</code>
         </p>
-        <TweetsComponent />
+        <TweetsComponent className='col-8 mx-auto' {...props} />
       </header>
     </div>
   );

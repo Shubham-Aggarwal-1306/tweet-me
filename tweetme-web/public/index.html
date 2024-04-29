@@ -29,7 +29,8 @@
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
+    <div id="root" data-username="asus" data-can-tweet="false"></div>
+    <div id="tweetme-container"></div>
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.
@@ -40,5 +41,19 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
+    <script>
+      var path = window.location.pathname;
+      var idRegex = /(?<tweetid>\d+)/;
+      var match = path.match(idRegex);
+      if (path !== "/") {
+        var root = document.getElementById("root");
+        root.style.display = "none";
+        if (match) {
+          var tweetid = match.groups.tweetid;
+          var tweetmeContainer = document.getElementById("tweetme-container");
+          tweetmeContainer.innerHTML = `<div class="tweetme-2-detail" data-tweet-id="${tweetid}" data-class-name="col-6 mx-auto"></div>`;
+        }
+      }
+    </script>
   </body>
 </html>

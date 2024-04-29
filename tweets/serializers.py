@@ -31,6 +31,7 @@ class TweetCreateSerializer(serializers.ModelSerializer):
 
 class TweetSerializer(serializers.ModelSerializer):
     likes = serializers.SerializerMethodField(read_only=True)
+    # userLike = serializers.SerializerMethodField(read_only=True)
     parent = TweetCreateSerializer(read_only=True)
     class Meta:
         model = Tweet
