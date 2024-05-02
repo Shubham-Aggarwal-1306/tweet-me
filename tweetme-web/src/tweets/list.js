@@ -1,45 +1,70 @@
-import React, { useEffect, useState } from 'react'
-import { apiTweetList } from './lookup'
-import { Tweet } from './detail'
+import React, {useEffect, useState}  from 'react'
+
+import {apiTweetList} from './lookup'
+
+import {Tweet} from './detail'
 
 export function TweetList(props) {
-    const [tweetsInit, setTweetsInit] = useState([]); // state variable
-    const [tweets, setTweets] = useState([]); // state variable
-    const [tweetsDidSet, setTweetsDidSet] = useState(false); // state variable
-    console.log(props)
-    useEffect(() => {
-        if (tweetsDidSet === false) {
-            const myCallback = (response, status) => {
-                if (status === 200) {
-                    setTweetsInit(response)
-                    setTweetsDidSet(true)
-                } else {
-                    alert('There was an error')
-                }
-            }
-            apiTweetList(props.username, myCallback)
-        }
-    }, [tweetsInit, tweetsDidSet, setTweetsInit])
+    const [tweetsInit, setTweetsInit] = useState([])
+    const [tweets, setTweets] = useState([])
+    const [nextUrl, setNextUrl] = useState(null)
+    const [tweetsDidSet, setTweetsDidSet] = useState(false)
+    useEffect(()=>{
+      const final = [...props.newTweets].concat(tweetsInit)
+      if (final.length !== tweets.length) {
+        setTweets(final)
+      }
+    }, [props.newTweets, tweets, tweetsInit])
 
     useEffect(() => {
-        const final = [...props.newTweets].concat(tweetsInit)
-        if (final.length !== tweets.length) {
-            setTweets(final)
+      if (tweetsDidSet === false){
+        const handleTweetListLookup = (response, status) => {
+          if (status === 200){
+            setNextUrl(response.next)
+            setTweetsInit(response.results)
+            setTweetsDidSet(true)
+          } else {
+            alert("There was an error")
+          }
         }
-    }, [props.newTweets, tweetsInit])
-    console.log(tweetsInit)
-    const handleRetweet = (newTweet) => {
-        let tempNewTweets = [...tweets];
-        tempNewTweets.unshift(newTweet);
-        setTweets(tempNewTweets);
+        apiTweetList(props.username, handleTweetListLookup)
+      }
+    }, [tweetsInit, tweetsDidSet, setTweetsDidSet, props.username])
+
+
+    const handleDidRetweet = (newTweet) => {
+      const updateTweetsInit = [...tweetsInit]
+      updateTweetsInit.unshift(newTweet)
+      setTweetsInit(updateTweetsInit)
+      const updateFinalTweets = [...tweets]
+      updateFinalTweets.unshift(tweets)
+      setTweets(updateFinalTweets)
     }
-    return tweets.map((item, index) => {
-        return <Tweet
-            tweet={item}
-            handleBackendEvent={handleRetweet}
-            className='my-5 py-5 border bg-white text-dark h-100 rounded col-12'
-            key={`${item.id}`}
-        />
-    })
-}
+    const handleLoadNext = (event) => {
+      event.preventDefault()
+      if (nextUrl !== null) {
+        const handleLoadNextResponse = (response, status) =>{
+          if (status === 200){
+            setNextUrl(response.next)
+            const newTweets = [...tweets].concat(response.results)
+            setTweetsInit(newTweets)
+            setTweets(newTweets)
+          } else {
+            alert("There was an error")
+          }
+        }
+        apiTweetList(props.username, handleLoadNextResponse, nextUrl)
+      }
+    }
+
+    return <React.Fragment>{tweets.map((item, index)=>{
+      return <Tweet  
+        tweet={item} 
+        didRetweet={handleDidRetweet}
+        className='my-5 py-5 border bg-white text-dark' 
+        key={`${index}-{item.id}`} />
+    })}
+    {nextUrl !== null && <button onClick={handleLoadNext} className='btn btn-outline-primary'>Load next</button>}
+    </React.Fragment>
+  }
 

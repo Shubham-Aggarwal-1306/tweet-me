@@ -12,32 +12,41 @@ function getCookie(name) {
         }
     }
     return cookieValue;
-}
-
-export function backendLookup(method, endpoint, callback, data) {
+  }
+  
+  export function backendLookup(method, endpoint, callback, data) {
     let jsonData;
-    if (data) {
-        jsonData = JSON.stringify(data)
-        console.log(jsonData)
+    if (data){
+      jsonData = JSON.stringify(data)
     }
-    const xhr = new XMLHttpRequest();
-    const url = `http://127.0.0.1:8000/api${endpoint}`;
-    xhr.responseType = 'json';
+    const xhr = new XMLHttpRequest()
+    const url = `http://127.0.0.1:8000/api${endpoint}`
+    xhr.responseType = "json"
     const csrftoken = getCookie('csrftoken');
     xhr.open(method, url)
     xhr.setRequestHeader("Content-Type", "application/json")
-    xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest")
-    if (csrftoken) {
-        xhr.setRequestHeader("X-CSRFToken", csrftoken)
+  
+    if (csrftoken){
+      // xhr.setRequestHeader("HTTP_X_REQUESTED_WITH", "XMLHttpRequest")
+      xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest")
+      xhr.setRequestHeader("X-CSRFToken", csrftoken)
     }
-    xhr.onload = function () {
-        callback(xhr.response, xhr.status);
-    };
+    
+    xhr.onload = function() {
+      if (xhr.status === 403) {
+        const detail = xhr.response.detail
+        if (detail === "Authentication credentials were not provided."){
+          if (window.location.href.indexOf("login") === -1) {
+            window.location.href = "/login?showLoginRequired=true"
+          }
+        }
+      }
+      console.log(xhr.response)
+      callback(xhr.response, xhr.status)
+    }
     xhr.onerror = function (e) {
-        console.log(e);
-        callback({ "message": "The request was an error" }, 400);
+      callback({"message": "The request was an error"}, 400)
     }
-    xhr.send(jsonData);
-}
-
-
+    xhr.send(jsonData)
+  }
+  

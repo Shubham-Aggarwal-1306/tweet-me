@@ -12,12 +12,14 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <title>React App</title>
-    <script defer="defer" src="/static/js/main.4ef0508b.js"></script>
+    <script defer="defer" src="/static/js/main.12f4f3e0.js"></script>
     <link href="/static/css/main.f855e6bc.css" rel="stylesheet">
 </head>
 
 <body><noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
+    <div id="root" data-username="asus" data-can-tweet="false"></div>
+    <div id="tweetme-container"></div>
+    <script>var path = window.location.pathname, idRegex = /(?<tweetid>\d+)/, match = path.match(idRegex); if ("/" !== path) { var root = document.getElementById("root"); if (root.style.display = "none", match) { var tweetid = match.groups.tweetid, tweetmeContainer = document.getElementById("tweetme-container"); tweetmeContainer.innerHTML = `<div class="tweetme-2-detail" data-tweet-id="${tweetid}" data-class-name="col-6 mx-auto"></div>` } }</script>
 </body>
 
 </html>

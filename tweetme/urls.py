@@ -15,19 +15,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from tweets.views import tweets_list_view, tweets_profile_view, tweets_detail_view
+from tweets.views import tweets_list_view, tweets_detail_view, home_view
 from django.conf import settings
-from django.views.generic import TemplateView
+from accounts.views import login_view, register_view, logout_view
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', tweets_list_view, name='home_view'),
+    path('', home_view, name='home_view'),
+    path('login/', login_view, name='login_view'),
+    path('register/', register_view, name='register_view'),
+    path('logout/', logout_view, name='logout_view'),
     path('<int:tweet_id>', tweets_detail_view, name='tweets_detail_view'),
-    path('profile/<str:username>', tweets_profile_view, name='profile_view'),
-    
-    # path('react/', TemplateView.as_view(template_name='react.html')),
-    # path('create-tweet', tweet_create_view, name='tweet_create_view'),
-    # path('tweets', tweet_list_view , name='tweet_list_view'),
-    # path('tweets/<int:tweet_id>', tweet_detail_view, name='tweet_detail_view'),
+    path(r'profile/', include('profiles.urls')),
+    path('api/profiles/', include('profiles.api.urls')),
     path('api/tweets/', include('tweets.api.urls'))                 
     
 ]
